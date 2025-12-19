@@ -36,7 +36,7 @@ const profileImage = import.meta.env.BASE_URL + '/yudai.jpg';
             </div>
             
             <h2 class="text-3xl font-bold mb-1">Yudai Homma</h2>
-            <span class="text-gray-500 font-medium">なんでも屋さん</span>
+            <span class="text-gray-500 font-medium">Web Engineer</span>
         </div>
 
         <section class="mb-10">

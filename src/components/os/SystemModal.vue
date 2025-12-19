@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
 
-defineProps<{
+
+interface Props {
   title?: string;
   message: string;
   confirmText?: string;
   cancelText?: string;
   isOpen: boolean;
-}>();
+  showCancel?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  showCancel: true,
+});
 
 const emit = defineEmits(['confirm', 'cancel']);
 
@@ -27,7 +32,7 @@ const onCancel = () => {
     <div 
       v-if="isOpen"
       class="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm transition-opacity"
-      @click.self="emit('cancel')"
+      @click.self="showCancel !== false ? emit('cancel') : null"
     >
       <div class="bg-white/80 backdrop-blur-xl w-[270px] rounded-[14px] overflow-hidden text-center shadow-2xl scale-100 animate-popIn">
         <div class="p-4 pt-5">
@@ -37,6 +42,7 @@ const onCancel = () => {
         
         <div class="flex border-t border-gray-300/50">
           <button 
+            v-if="showCancel !== false"
             @click="onCancel"
             class="flex-1 py-3 text-[17px] text-[#007AFF] font-normal hover:bg-gray-200/50 active:bg-gray-300/50 transition-colors border-r border-gray-300/50"
           >

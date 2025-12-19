@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import Icon from './Icon.vue';
 import Dock from './Dock.vue';
 import PhotoWidget from './PhotoWidget.vue';
@@ -74,6 +74,25 @@ const executeRemove = () => {
   }
   showRemoveModal.value = false;
 };
+
+// --- Easter Egg (All Apps Removed) ---
+const showResetModal = ref(false);
+
+const executeReset = () => {
+  store.resetApps();
+  showResetModal.value = false;
+};
+
+watch(
+  [() => store.gridItems, () => store.dockItems],
+  ([grid, dock]) => {
+    const hasGridApps = grid.some((item: any) => item.type !== 'empty');
+    if (!hasGridApps && dock.length === 0) {
+      showResetModal.value = true;
+    }
+  },
+  { deep: true }
+);
 </script>
 
 <template>
@@ -153,7 +172,7 @@ const executeRemove = () => {
     <!-- Dock -->
     <Dock />
     
-    <!-- Confirm Modal -->
+    <!-- Confirm Remove Modal -->
     <SystemModal
       :is-open="showRemoveModal"
       title="ホーム画面から取り除く"
@@ -162,8 +181,19 @@ const executeRemove = () => {
       @confirm="executeRemove"
       @cancel="showRemoveModal = false"
     />
+
+    <!-- Easter Egg Modal (All Apps Removed) -->
+    <SystemModal
+      :is-open="showResetModal"
+      title="警告"
+      message="全部消したの……？ひどい……"
+      confirm-text="リセットする"
+      :show-cancel="false"
+      @confirm="executeReset"
+    />
   </div>
 </template>
+
 
 <style scoped>
 @keyframes jiggle {

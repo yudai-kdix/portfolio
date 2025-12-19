@@ -22,13 +22,13 @@ export interface WindowInstance {
 }
 
 export const useOSStore = defineStore('os', () => {
-  // --- App State ---
-  const dockItems = ref([
+  // Initial Data Generators
+  const generateDock = () => [
     { id: 'profile', type: 'app', icon: PhUserList, label: 'Profile' },
     { id: 'mail', type: 'app', icon: PhEnvelope, label: 'Mail' },  
     { id: 'external-x', type: 'app', icon: PhXLogo, label: 'X' },
     { id: 'external-github', type: 'app', icon: PhGithubLogo, label: 'GitHub' },
-  ]);
+  ];
 
   const generateGrid = () => {
     const initialApps = [
@@ -49,6 +49,8 @@ export const useOSStore = defineStore('os', () => {
     return items;
   };
 
+  // --- App State ---
+  const dockItems = ref(generateDock());
   const gridItems = ref(generateGrid());
 
   const windows = ref<WindowInstance[]>([]);
@@ -64,8 +66,6 @@ export const useOSStore = defineStore('os', () => {
     activeWindowId.value = instanceId;
     const win = windows.value.find((w) => w.instanceId === instanceId);
     if (win) {
-      // Bring to front logic could be complex with many windows, 
-      // for now simply max zIndex + 1 or re-sort
       const maxZ = Math.max(BASE_Z_INDEX, ...windows.value.map((w) => w.zIndex));
       if (win.zIndex < maxZ) {
         win.zIndex = maxZ + 1;
@@ -77,14 +77,6 @@ export const useOSStore = defineStore('os', () => {
   };
 
   const openApp = (appId: AppId, params?: Record<string, string>) => {
-    // Check if app is already open (single instance policy for now?)
-    // Design doesn't strictly specify single instance, but usually profile/works are single.
-    // Let's allow multiple for now if needed, but for MVP maybe single instance per AppID is safer/easier.
-    // Spec says "WindowInstance" has instanceId, implying multiple possible.
-    // But for simplicty, let's check if there is an existing minimized or open window for this AppId.
-    
-    // UPDATE: Design says "Multitask View", implying multiple apps.
-    // Let's generate a unique instance ID.
     const instanceId = `${appId}-${Date.now()}`;
     const maxZ = Math.max(BASE_Z_INDEX, ...windows.value.map((w) => w.zIndex));
     
@@ -98,11 +90,6 @@ export const useOSStore = defineStore('os', () => {
     
     windows.value.push(newWindow);
     activeWindowId.value = instanceId;
-    
-    // Animate to open state effectively handled by component, but state transition here:
-    // Actually, "opening" state is used for animation start. Components should watch this and transition to "open".
-    // For simple store logic, we just set it.
-    
     syncToHash();
   };
 
@@ -110,10 +97,6 @@ export const useOSStore = defineStore('os', () => {
     const win = windows.value.find((w) => w.instanceId === instanceId);
     if (win) {
       win.state = 'closing';
-      // Actual removal should happen after animation, but for store logic:
-      // We might need a callback or a timeout.
-      // Alternatively, the component calls "removeWindow" after animation.
-      // For MVP, let's just mark it closing, and have a separate cleanup action.
     }
     syncToHash();
   };
@@ -122,11 +105,6 @@ export const useOSStore = defineStore('os', () => {
     windows.value = windows.value.filter(w => w.instanceId !== instanceId);
     if (activeWindowId.value === instanceId) {
       activeWindowId.value = null;
-      // Focus next top window
-      if (windows.value.length > 0) {
-        // Find window with max zIndex
-        // ...
-      }
     }
     syncToHash();
   };
@@ -136,12 +114,10 @@ export const useOSStore = defineStore('os', () => {
     if (win) {
       win.state = 'minimized';
     }
-    activeWindowId.value = null; // or focus next?
+    activeWindowId.value = null; 
     syncToHash();
   };
   
-  // Hash Sync (Simplified for MVP)
-  // Format: #app=profile or #multitask
   const syncToHash = () => {
     if (isMultitaskOpen.value) {
       history.replaceState(null, '', '#multitask');
@@ -162,22 +138,12 @@ export const useOSStore = defineStore('os', () => {
       isMultitaskOpen.value = true;
       return;
     }
-    
     if (hash.startsWith('#app=')) {
-      const query = new URLSearchParams(hash.slice(1)); // remove #
+      const query = new URLSearchParams(hash.slice(1)); 
       const appId = query.get('app') as AppId;
       if (appId) {
-        // Check if already open
-        // ...
-        // If not, open it
         openApp(appId);
       }
-    } else {
-        // #home or empty
-        // Ensure all windows are minimized or closed?
-        // Or just do nothing? Design says "Back/Forward and UI state sync".
-        // If we go back to home, we probably want to minimize open windows or close them?
-        // Design: "Back / Forward and UI state sync"
     }
   };
 
@@ -189,8 +155,6 @@ export const useOSStore = defineStore('os', () => {
     const gridIndex = gridItems.value.findIndex(i => i.id === id);
     if (gridIndex !== -1) {
       gridItems.value.splice(gridIndex, 1);
-      // Add new empty slot to maintain grid size
-      // Use a unique ID for the empty slot
       gridItems.value.push({ id: `empty-${Date.now()}`, type: 'empty' } as any);
       return;
     }
@@ -200,6 +164,14 @@ export const useOSStore = defineStore('os', () => {
     }
   };
 
+  const resetApps = () => {
+    dockItems.value = generateDock();
+    gridItems.value = generateGrid();
+    isEditMode.value = false;
+  };
+
+  // ... (rest of the file)
+  
   return {
     windows,
     activeWindowId,
@@ -215,6 +187,7 @@ export const useOSStore = defineStore('os', () => {
     syncFromHash,
     syncToHash,
     setEditMode,
-    removeApp
+    removeApp,
+    resetApps
   };
 });
