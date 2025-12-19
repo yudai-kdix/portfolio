@@ -10,13 +10,14 @@ import { useDynamicLayout } from '../../composables/useDynamicLayout';
 import { useAppRemoval } from '../../composables/useAppRemoval';
 import { useEasterEgg } from '../../composables/useEasterEgg';
 
+import AppWidget from './AppWidget.vue';
+
 const store = useOSStore();
 
 // --- Composables ---
-const { gap } = useDynamicLayout();
+const { gap, isDesktop } = useDynamicLayout();
 const { showRemoveModal, promptRemove, executeRemove } = useAppRemoval();
 const { showResetModal, executeReset } = useEasterEgg();
-
 
 // Edit Mode (Jiggle)
 // const isEditMode = ref(false); // Using store
@@ -44,7 +45,6 @@ const handleItemClick = (item: any) => {
   store.openApp(item.id);
 };
 </script>
-
 <template>
   <div 
     class="absolute inset-0 z-0 pt-12"
@@ -54,7 +54,8 @@ const handleItemClick = (item: any) => {
     <!-- Grid -->
     <draggable
       v-model="store.gridItems"
-      class="grid grid-cols-4"
+      class="grid"
+      :class="isDesktop ? 'grid-cols-6' : 'grid-cols-4'"
       :style="{ 
           columnGap: gap + 'px', 
           rowGap: gap + 'px',
@@ -81,10 +82,10 @@ const handleItemClick = (item: any) => {
             @mouseup="cancelLongPress" 
             @mouseleave="cancelLongPress"
             @touchend="cancelLongPress"
-            class="relative flex items-center justify-center aspect-square"
+            class="relative flex items-center justify-center transition-all duration-300"
             :class="[
               { 'animate-jiggle': store.isEditMode && element.type !== 'empty' },
-              element.type === 'widget' ? 'col-span-2 row-span-2 aspect-auto' : '',
+              element.type === 'widget' ? 'col-span-2 row-span-2 aspect-auto' : 'aspect-square',
               element.type === 'empty' ? 'empty-slot' : ''
             ]"
         >
@@ -93,6 +94,13 @@ const handleItemClick = (item: any) => {
                 :class="{ 'pointer-events-none': store.isEditMode }" 
             />
             
+            <AppWidget
+                v-else-if="element.type === 'app' && isDesktop"
+                :app="element"
+                :is-edit-mode="store.isEditMode"
+                :class="{ 'pointer-events-none': store.isEditMode }"
+            />
+
             <Icon
                 v-else-if="element.type === 'app'"
                 :icon="element.icon"
@@ -101,13 +109,14 @@ const handleItemClick = (item: any) => {
                 :class="{ 'pointer-events-none': store.isEditMode }"
             />
             
-            <!-- Empty Slot (Visible only for debug/layout, effectively transparent) -->
+            <!-- Empty Slot -->
             <div v-else class="w-full h-full"></div>
 
             <!-- Remove Button -->
              <div 
                 v-if="store.isEditMode && element.type !== 'empty'" 
                 @click.stop="promptRemove(element)"
+
                 @mousedown.stop
                 @touchstart.stop
                 class="absolute -top-2 -left-2 z-20 bg-gray-400 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg opacity-90 animate-none cursor-pointer hover:bg-gray-500 active:scale-95 transition-colors"

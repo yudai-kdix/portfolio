@@ -1,6 +1,6 @@
 import { PhChartLineUp, PhEnvelope, PhGameController, PhGithubLogo, PhImages, PhUserList, PhXLogo } from '@phosphor-icons/vue';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { markRaw, ref } from 'vue';
 
 export type AppId =
   | 'profile'
@@ -24,18 +24,18 @@ export interface WindowInstance {
 export const useOSStore = defineStore('os', () => {
   // Initial Data Generators
   const generateDock = () => [
-    { id: 'profile', type: 'app', icon: PhUserList, label: 'Profile' },
-    { id: 'mail', type: 'app', icon: PhEnvelope, label: 'Mail' },  
-    { id: 'external-x', type: 'app', icon: PhXLogo, label: 'X' },
-    { id: 'external-github', type: 'app', icon: PhGithubLogo, label: 'GitHub' },
+    { id: 'profile', type: 'app', icon: markRaw(PhUserList), label: 'Profile' },
+    { id: 'mail', type: 'app', icon: markRaw(PhEnvelope), label: 'Mail' },  
+    { id: 'external-x', type: 'app', icon: markRaw(PhXLogo), label: 'X' },
+    { id: 'external-github', type: 'app', icon: markRaw(PhGithubLogo), label: 'GitHub' },
   ];
 
   const generateGrid = () => {
     const initialApps = [
       { id: 'widget-profile', type: 'widget' },
-      { id: 'gallery', type: 'app', icon: PhImages, label: 'Gallery' },
-      { id: 'experience', type: 'app', icon: PhChartLineUp, label: 'Exp' },
-      { id: 'playground', type: 'app', icon: PhGameController, label: 'Playground' },
+      { id: 'gallery', type: 'app', icon: markRaw(PhImages), label: 'Gallery' },
+      { id: 'experience', type: 'app', icon: markRaw(PhChartLineUp), label: 'Exp' },
+      { id: 'playground', type: 'app', icon: markRaw(PhGameController), label: 'Playground' },
     ];
     
     const totalSlots = 20;
