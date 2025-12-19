@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import Icon from './Icon.vue';
 import Dock from './Dock.vue';
 import PhotoWidget from './PhotoWidget.vue';
@@ -8,6 +8,27 @@ import { useOSStore } from '../../stores/osStore';
 import draggable from 'vuedraggable';
 
 const store = useOSStore();
+
+// --- Dynamic Layout ---
+const gap = ref(20);
+const iconSize = 60; // 60px as per Icon.vue md size
+
+const updateLayout = () => {
+  const width = window.innerWidth;
+  // Calculate gap to fit 4 columns evenly with equal outer padding
+  // 5 gaps (left, between*3, right) for 4 columns
+  const calculated = (width - (4 * iconSize)) / 5;
+  gap.value = Math.max(10, calculated); // Min 10px
+};
+
+onMounted(() => {
+  updateLayout();
+  window.addEventListener('resize', updateLayout);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateLayout);
+});
 
 // Edit Mode (Jiggle)
 // const isEditMode = ref(false); // Using store
@@ -57,14 +78,21 @@ const executeRemove = () => {
 
 <template>
   <div 
-    class="absolute inset-0 z-0 pt-12 px-5"
+    class="absolute inset-0 z-0 pt-12"
     @mousedown="handleBackgroundClick"
     @touchstart="handleBackgroundClick"
   >
     <!-- Grid -->
     <draggable
       v-model="store.gridItems"
-      class="grid grid-cols-4 gap-x-5 gap-y-3"
+      class="grid grid-cols-4"
+      :style="{ 
+          columnGap: gap + 'px', 
+          rowGap: gap + 'px',
+          paddingLeft: gap + 'px', 
+          paddingRight: gap + 'px', 
+          paddingBottom: '140px' 
+      }"
       item-key="id"
       :animation="250"
       :group="{ name: 'apps', put: true }"
