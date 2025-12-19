@@ -1,0 +1,21 @@
+---
+import OSApp from '../components/os/OSApp.vue';
+import '../styles/globals.css';
+---
+
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Yudai Honma | Portfolio OS</title>
+        <meta name="description" content="Yudai Honma's Portfolio - Web OS Interface" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	</head>
+	<body class="bg-gray-900 overflow-hidden">
+		<OSApp client:only="vue" />
+	</body>
+</html>
