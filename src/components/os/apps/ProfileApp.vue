@@ -42,7 +42,7 @@ const profileImage = import.meta.env.BASE_URL + '/yudai.jpg';
         <section class="mb-10">
             <h3 class="text-lg font-bold mb-3 border-b border-gray-100 pb-2">自己紹介</h3>
             <p class="text-gray-600 leading-relaxed text-sm">
-                Webに関して色々やってる紅茶が趣味のえんじにあです！<br>
+                なにか色々やってる紅茶が趣味のえんじにあです！<br>
                 コミュニティの運営なども学生の間やってきたので今後も運営系に関われたらと考えています！
             </p>
         </section>
