@@ -17,7 +17,7 @@ const photos = [
   { date: '2025/11/30', title: '東京', src: '/gallery/20251130.jpg' },
 ].map(p => ({
   ...p,
-  src: import.meta.env.BASE_URL + p.src.substring(1)
+  src: import.meta.env.BASE_URL + p.src
 }));
 
 defineEmits<{

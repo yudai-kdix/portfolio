@@ -12,7 +12,7 @@ const links = [
   { label: 'X (Twitter)', url: 'https://x.com/yuuudaiiiiii', icon: PhXLogo },
   { label: 'KINDAI Info-Tech HUB', url: 'https://kithub.jp/contact', icon: PhGlobe }, 
 ];
-const profileImage = import.meta.env.BASE_URL + 'yudai.jpg';
+const profileImage = import.meta.env.BASE_URL + '/yudai.jpg';
 </script>
 
 <template>
