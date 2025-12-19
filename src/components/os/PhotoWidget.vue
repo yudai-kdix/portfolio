@@ -2,7 +2,7 @@
 import { useOSStore } from '../../stores/osStore';
 
 const store = useOSStore();
-const profileImage = '/yudai.jpg';
+const profileImage = import.meta.env.BASE_URL + 'yudai.jpg';
 
 const handleClick = () => {
   store.openApp('profile');

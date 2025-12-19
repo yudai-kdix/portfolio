@@ -12,6 +12,7 @@ const links = [
   { label: 'X (Twitter)', url: 'https://x.com/yuuudaiiiiii', icon: PhXLogo },
   { label: 'KINDAI Info-Tech HUB', url: 'https://kithub.jp/contact', icon: PhGlobe }, 
 ];
+const profileImage = import.meta.env.BASE_URL + 'yudai.jpg';
 </script>
 
 <template>
@@ -31,7 +32,7 @@ const links = [
     <div class="flex-1 overflow-y-auto px-6 pb-20">
         <div class="flex flex-col items-center mt-8 mb-8">
             <div class="w-32 h-32 rounded-full overflow-hidden shadow-xl mb-6 ring-4 ring-gray-50 border-4 border-white">
-                <img src="/yudai.jpg" alt="Yudai Homma" class="w-full h-full object-cover" />
+                <img :src="profileImage" alt="Yudai Homma" class="w-full h-full object-cover" />
             </div>
             
             <h2 class="text-3xl font-bold mb-1">Yudai Homma</h2>

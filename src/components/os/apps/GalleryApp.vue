@@ -2,6 +2,7 @@
 import { PhArrowLeft, PhFrameCorners } from '@phosphor-icons/vue';
 
 // Gallery Data from public/gallery
+// Gallery Data from public/gallery
 const photos = [
   { date: '2025/01/01', title: '近所の駐車場', src: '/gallery/20250101.jpg' },
   { date: '2025/05/04', title: '京都のどこか', src: '/gallery/20250504.jpg' },
@@ -14,7 +15,10 @@ const photos = [
   { date: '2025/11/23', title: '京都 (3)', src: '/gallery/20251123_3.jpg' },
   { date: '2025/11/23', title: '京都 (4)', src: '/gallery/20251123_4.jpg' },
   { date: '2025/11/30', title: '東京', src: '/gallery/20251130.jpg' },
-];
+].map(p => ({
+  ...p,
+  src: import.meta.env.BASE_URL + p.src.substring(1)
+}));
 
 defineEmits<{
   (e: 'close'): void;
