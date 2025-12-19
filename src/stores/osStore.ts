@@ -59,6 +59,8 @@ export const useOSStore = defineStore('os', () => {
   const activeWindowId = ref<string | null>(null);
   const isMultitaskOpen = ref(false);
   const isEditMode = ref(false);
+  const isLocked = ref(true);
+  const notification = ref<{ title: string; message: string; icon?: any; visible: boolean } | null>(null);
 
   // Constants
   const BASE_Z_INDEX = 10;
@@ -193,11 +195,20 @@ export const useOSStore = defineStore('os', () => {
 
   // ... (rest of the file)
   
+  const showNotification = (title: string, message: string, icon?: any) => {
+    notification.value = { title, message, icon, visible: true };
+    setTimeout(() => {
+        if (notification.value) notification.value.visible = false;
+    }, 2500);
+  };
+
   return {
     windows,
     activeWindowId,
     isMultitaskOpen,
     isEditMode,
+    isLocked,
+    notification,
     dockItems,
     gridItems,
     focusApp,
@@ -209,6 +220,7 @@ export const useOSStore = defineStore('os', () => {
     syncToHash,
     setEditMode,
     removeApp,
-    resetApps
+    resetApps,
+    showNotification
   };
 });

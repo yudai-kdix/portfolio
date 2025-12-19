@@ -4,6 +4,8 @@ import { useOSStore } from '../../stores/osStore';
 import HomeScreen from './HomeScreen.vue';
 import WindowManager from './WindowManager.vue';
 import StatusBar from './StatusBar.vue';
+import LockScreen from './LockScreen.vue';
+import SystemNotification from './SystemNotification.vue';
 
 const store = useOSStore();
 
@@ -32,13 +34,21 @@ onMounted(() => {
     </div>
 
     <!-- UI Layer -->
-    <div class="relative z-10 w-full h-full flex flex-col">
+    <div class="relative z-10 w-full h-full flex flex-col transition-all duration-500" :class="{ 'scale-105 blur-md': store.isLocked }">
       <StatusBar />
       <div class="flex-1 relative w-full max-w-screen-xl mx-auto">
         <HomeScreen />
         <WindowManager />
       </div>
     </div>
+
+    <!-- Lock Screen -->
+    <transition name="unlock">
+        <LockScreen v-if="store.isLocked" />
+    </transition>
+
+    <!-- Notification -->
+    <SystemNotification />
   </div>
 </template>
 
@@ -52,6 +62,15 @@ onMounted(() => {
 .animate-blob {
   animation: blob 10s infinite;
 }
+/* Unlock Transition */
+.unlock-leave-active {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.unlock-leave-to {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
 .animation-delay-2000 {
   animation-delay: 2s;
 }
