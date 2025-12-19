@@ -9,9 +9,13 @@ const store = useOSStore();
 
 onMounted(() => {
   store.syncFromHash();
-  window.addEventListener('hashchange', () => {
+  
+  const handleHashChange = () => {
     store.syncFromHash();
-  });
+  };
+
+  window.addEventListener('hashchange', handleHashChange);
+  window.addEventListener('popstate', handleHashChange); // Handle History Back
 });
 </script>
 

@@ -1,4 +1,4 @@
-import { PhChartLineUp, PhEnvelope, PhGameController, PhGithubLogo, PhImages, PhUserList, PhXLogo } from '@phosphor-icons/vue';
+import { PhChartLineUp, PhEnvelope, PhGameController, PhGithubLogo, PhImages, PhInfo, PhUserList, PhXLogo } from '@phosphor-icons/vue';
 import { defineStore } from 'pinia';
 import { markRaw, ref } from 'vue';
 
@@ -11,6 +11,7 @@ export type AppId =
   | 'mail'
   | 'external-x'
   | 'external-github'
+  | 'about'
   | string;
 
 export interface WindowInstance {
@@ -36,6 +37,7 @@ export const useOSStore = defineStore('os', () => {
       { id: 'gallery', type: 'app', icon: markRaw(PhImages), label: 'Gallery' },
       { id: 'experience', type: 'app', icon: markRaw(PhChartLineUp), label: 'Exp' },
       { id: 'playground', type: 'app', icon: markRaw(PhGameController), label: 'Playground' },
+      { id: 'about', type: 'app', icon: markRaw(PhInfo), label: 'About' },
     ];
     
     const totalSlots = 20;
@@ -76,9 +78,12 @@ export const useOSStore = defineStore('os', () => {
     }
   };
 
-  const openApp = (appId: AppId, params?: Record<string, string>) => {
+  const openApp = (appId: AppId, params?: Record<string, string>, options?: { fromHash?: boolean }) => {
     const instanceId = `${appId}-${Date.now()}`;
     const maxZ = Math.max(BASE_Z_INDEX, ...windows.value.map((w) => w.zIndex));
+    
+    // Check if already open? Use existing if single instance desired?
+    // Current logic always opens new window for some reason, but let's keep it.
     
     const newWindow: WindowInstance = {
       instanceId,
@@ -90,7 +95,12 @@ export const useOSStore = defineStore('os', () => {
     
     windows.value.push(newWindow);
     activeWindowId.value = instanceId;
-    syncToHash();
+    
+    if (!options?.fromHash) {
+        // Push new history entry if opened from UI
+        const query = params ? `&${new URLSearchParams(params).toString()}` : '';
+        history.pushState(null, '', `#app=${appId}${query}`);
+    }
   };
 
   const closeApp = (instanceId: string) => {
@@ -142,8 +152,19 @@ export const useOSStore = defineStore('os', () => {
       const query = new URLSearchParams(hash.slice(1)); 
       const appId = query.get('app') as AppId;
       if (appId) {
-        openApp(appId);
+         // Check if already active to avoid duplicates if possible, or just open
+         // Current logic opens new.
+         openApp(appId, undefined, { fromHash: true });
       }
+    } else {
+        // Home or empty
+        activeWindowId.value = null;
+        isMultitaskOpen.value = false;
+        // Optionally close windows or just minimize/deselect
+        // If we want "Back" to close the app visually:
+        windows.value.forEach(w => {
+            if (w.state === 'open' || w.state === 'opening') w.state = 'minimized'; // Or closing?
+        });
     }
   };
 

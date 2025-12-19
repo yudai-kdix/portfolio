@@ -5,6 +5,7 @@ import ProfileApp from './apps/ProfileApp.vue';
 import GalleryApp from './apps/GalleryApp.vue';
 import PlaygroundApp from './apps/PlaygroundApp.vue';
 import RedirectApp from './apps/RedirectApp.vue';
+import AboutApp from './apps/AboutApp.vue';
 import { defineAsyncComponent } from 'vue';
 
 const store = useOSStore();
@@ -22,6 +23,7 @@ const apps: Record<string, any> = {
   gallery: GalleryApp,
   experience: defineAsyncComponent(() => import('./apps/ExperienceApp.vue')),
   playground: PlaygroundApp,
+  about: AboutApp,
 };
 
 const getComponent = (appId: string) => {
