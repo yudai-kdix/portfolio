@@ -1,34 +1,22 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref } from 'vue';
 import Icon from './Icon.vue';
 import Dock from './Dock.vue';
 import PhotoWidget from './PhotoWidget.vue';
 import SystemModal from './SystemModal.vue';
 import { useOSStore } from '../../stores/osStore';
 import draggable from 'vuedraggable';
+import { useDynamicLayout } from '../../composables/useDynamicLayout';
+import { useAppRemoval } from '../../composables/useAppRemoval';
+import { useEasterEgg } from '../../composables/useEasterEgg';
 
 const store = useOSStore();
 
-// --- Dynamic Layout ---
-const gap = ref(20);
-const iconSize = 60; // 60px as per Icon.vue md size
+// --- Composables ---
+const { gap } = useDynamicLayout();
+const { showRemoveModal, promptRemove, executeRemove } = useAppRemoval();
+const { showResetModal, executeReset } = useEasterEgg();
 
-const updateLayout = () => {
-  const width = window.innerWidth;
-  // Calculate gap to fit 4 columns evenly with equal outer padding
-  // 5 gaps (left, between*3, right) for 4 columns
-  const calculated = (width - (4 * iconSize)) / 5;
-  gap.value = Math.max(10, calculated); // Min 10px
-};
-
-onMounted(() => {
-  updateLayout();
-  window.addEventListener('resize', updateLayout);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('resize', updateLayout);
-});
 
 // Edit Mode (Jiggle)
 // const isEditMode = ref(false); // Using store
@@ -55,44 +43,6 @@ const handleItemClick = (item: any) => {
   if (store.isEditMode) return; 
   store.openApp(item.id);
 };
-
-// --- App Removal Logic ---
-const showRemoveModal = ref(false);
-const itemToRemove = ref<any>(null);
-
-const promptRemove = (item: any) => {
-  console.log('HomeScreen: promptRemove', item);
-  itemToRemove.value = item;
-  showRemoveModal.value = true;
-};
-
-const executeRemove = () => {
-  console.log('HomeScreen: executeRemove', itemToRemove.value);
-  if (itemToRemove.value) {
-    store.removeApp(itemToRemove.value.id);
-    itemToRemove.value = null;
-  }
-  showRemoveModal.value = false;
-};
-
-// --- Easter Egg (All Apps Removed) ---
-const showResetModal = ref(false);
-
-const executeReset = () => {
-  store.resetApps();
-  showResetModal.value = false;
-};
-
-watch(
-  [() => store.gridItems, () => store.dockItems],
-  ([grid, dock]) => {
-    const hasGridApps = grid.some((item: any) => item.type !== 'empty');
-    if (!hasGridApps && dock.length === 0) {
-      showResetModal.value = true;
-    }
-  },
-  { deep: true }
-);
 </script>
 
 <template>
