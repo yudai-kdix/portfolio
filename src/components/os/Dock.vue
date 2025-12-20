@@ -52,7 +52,7 @@ const executeRemove = () => {
   <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
     <draggable 
         v-model="store.dockItems"
-        class="flex items-end justify-center gap-5 px-5 py-4 bg-white/20 backdrop-blur-2xl rounded-[30px] border border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.2)] dock-container w-[335px]"
+        class="flex items-end justify-center gap-5 px-5 py-3 bg-white/20 backdrop-blur-2xl rounded-[30px] border border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.2)] dock-container w-[335px]"
         item-key="id"
         :animation="250"
         :group="{ name: 'apps', put: checkDockPut }"

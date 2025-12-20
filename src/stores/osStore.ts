@@ -1,4 +1,4 @@
-import { PhChartLineUp, PhEnvelope, PhGameController, PhGithubLogo, PhImages, PhInfo, PhUserList, PhXLogo } from '@phosphor-icons/vue';
+import { PhChartLineUp, PhEnvelope, PhGameController, PhGithubLogo, PhGoogleLogo, PhImages, PhInfo, PhMusicNote, PhUserList, PhXLogo } from '@phosphor-icons/vue';
 import { defineStore } from 'pinia';
 import { markRaw, ref } from 'vue';
 
@@ -12,6 +12,8 @@ export type AppId =
   | 'external-x'
   | 'external-github'
   | 'about'
+  | 'music'
+  | 'external-google'
   | string;
 
 export interface WindowInstance {
@@ -32,7 +34,7 @@ export const useOSStore = defineStore('os', () => {
   ];
 
   const generateGrid = () => {
-    const initialApps = [
+    const page1Apps = [
       { id: 'widget-profile', type: 'widget' },
       { id: 'gallery', type: 'app', icon: markRaw(PhImages), label: 'Gallery' },
       { id: 'experience', type: 'app', icon: markRaw(PhChartLineUp), label: 'Exp' },
@@ -40,12 +42,26 @@ export const useOSStore = defineStore('os', () => {
       { id: 'about', type: 'app', icon: markRaw(PhInfo), label: 'About' },
     ];
     
-    const totalSlots = 20;
-    const items = [...initialApps];
+    const page2Apps = [
+      { id: 'music', type: 'app', icon: markRaw(PhMusicNote), label: 'Music' },
+      { id: 'external-google', type: 'app', icon: markRaw(PhGoogleLogo), label: 'Google' },
+    ];
+    
+    const pageSize = 20;
+    const totalSlots = 40;
+    const items: any[] = [...page1Apps];
+    
+    // Fill Page 1 with empty slots
+    while (items.length < pageSize) {
+        items.push({ id: `empty-${items.length}`, type: 'empty' });
+    }
+    
+    // Add Page 2 Apps
+    items.push(...page2Apps);
     
     // Fill remaining slots
-    for (let i = items.length; i < totalSlots; i++) {
-      items.push({ id: `empty-${i}`, type: 'empty' } as any);
+    while (items.length < totalSlots) {
+        items.push({ id: `empty-${items.length}`, type: 'empty' });
     }
     
     return items;
@@ -54,7 +70,7 @@ export const useOSStore = defineStore('os', () => {
   // --- App State ---
   const dockItems = ref(generateDock());
   const gridItems = ref(generateGrid());
-
+  
   const windows = ref<WindowInstance[]>([]);
   const activeWindowId = ref<string | null>(null);
   const isMultitaskOpen = ref(false);

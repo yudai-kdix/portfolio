@@ -6,6 +6,7 @@ import GalleryApp from './apps/GalleryApp.vue';
 import PlaygroundApp from './apps/PlaygroundApp.vue';
 import RedirectApp from './apps/RedirectApp.vue';
 import AboutApp from './apps/AboutApp.vue';
+import MusicApp from './apps/MusicApp.vue';
 import { defineAsyncComponent } from 'vue';
 
 const store = useOSStore();
@@ -15,6 +16,7 @@ const redirects: Record<string, { url: string; label: string; isMail?: boolean }
   'mail': { url: 'mailto:ydhm04222@gmail.com', label: 'Mail', isMail: true },
   'external-x': { url: 'https://x.com/yuuudaiiiiii', label: 'X' },
   'external-github': { url: 'https://github.com/yudai-kdix', label: 'GitHub' },
+  'external-google': { url: 'https://google.com', label: 'Google' },
 };
 
 // Map app IDs to components
@@ -24,6 +26,7 @@ const apps: Record<string, any> = {
   experience: defineAsyncComponent(() => import('./apps/ExperienceApp.vue')),
   playground: PlaygroundApp,
   about: AboutApp,
+  music: MusicApp,
 };
 
 const getComponent = (appId: string) => {
