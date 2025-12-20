@@ -314,7 +314,7 @@ const onDragEnd = () => {
     </div>
     
     <!-- Mobile Pagination Dots -->
-    <div v-if="!isDesktop" class="absolute bottom-[115px] left-0 right-0 flex justify-center gap-2 pointer-events-none z-10 transition-opacity duration-300" :class="{ 'opacity-0': store.isEditMode }">
+    <div v-if="!isDesktop" class="absolute bottom-[115px] left-0 right-0 flex justify-center gap-2 pointer-events-none z-10 transition-opacity duration-300">
         <div 
             v-for="i in 2" 
             :key="i" 
