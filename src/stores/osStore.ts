@@ -47,8 +47,8 @@ export const useOSStore = defineStore('os', () => {
       { id: 'external-google', type: 'app', icon: markRaw(PhGoogleLogo), label: 'Google' },
     ];
     
-    const pageSize = 20;
-    const totalSlots = 40;
+    const pageSize = 16;
+    const totalSlots = 32;
     const items: any[] = [...page1Apps];
     
     // Fill Page 1 with empty slots

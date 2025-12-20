@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import Icon from './Icon.vue';
+import draggable from 'vuedraggable';
+import { useAppRemoval } from '../../composables/useAppRemoval';
+import { useDynamicLayout } from '../../composables/useDynamicLayout';
+import { useEasterEgg } from '../../composables/useEasterEgg';
+import { useOSStore } from '../../stores/osStore';
 import Dock from './Dock.vue';
+import Icon from './Icon.vue';
 import PhotoWidget from './PhotoWidget.vue';
 import SystemModal from './SystemModal.vue';
-import { useOSStore } from '../../stores/osStore';
-import draggable from 'vuedraggable';
-import { useDynamicLayout } from '../../composables/useDynamicLayout';
-import { useAppRemoval } from '../../composables/useAppRemoval';
-import { useEasterEgg } from '../../composables/useEasterEgg';
 
 import AppWidget from './AppWidget.vue';
 
@@ -33,7 +33,7 @@ const cancelLongPress = () => {
   clearTimeout(longPressTimer);
 };
 
-const handleBackgroundClick = (e: MouseEvent) => {
+const handleBackgroundClick = (e: MouseEvent | TouchEvent) => {
   // If clicking on 'empty' slot, we treat it as background
   if (store.isEditMode && (e.target === e.currentTarget || (e.target as HTMLElement).closest('.empty-slot'))) {
     store.setEditMode(false);
@@ -47,7 +47,7 @@ const handleItemClick = (item: any) => {
 
 // --- Mobile Pagination Helpers ---
 import { computed } from 'vue';
-const pageSize = 20;
+const pageSize = 16;
 
 const createPageComputed = (pageIndex: number) => {
     return computed({
