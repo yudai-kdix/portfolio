@@ -17,5 +17,10 @@ import '../styles/globals.css';
 	</head>
 	<body class="bg-gray-900 overflow-hidden">
 		<OSApp client:only="vue" />
+        <script>
+            document.addEventListener('gesturestart', function(e) {
+                e.preventDefault();
+            });
+        </script>
 	</body>
 </html>

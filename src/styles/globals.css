@@ -13,6 +13,7 @@ body {
   user-select: none;
   background-color: #000;
   color: #000;
+  touch-action: manipulation;
 }
 
 /* iOS-like Scrollbar */
