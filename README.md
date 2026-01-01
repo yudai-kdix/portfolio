@@ -1,43 +1,44 @@
-# Astro Starter Kit: Minimal
+# Yudai Honma | Portfolio OS
 
-```sh
-npm create astro@latest -- --template minimal
+Webベースのオペレーティングシステム風ポートフォリオサイトです。
+iOSやモダンなデスクトップOSのような操作感を目指して作成しました。
+
+## 🌟 特徴
+
+- **OS風インターフェース**:
+  - ロック画面（時計、パスコード入力）
+  - ホーム画面（アプリアイコン、ウィジェット、ドック）
+  - ウィンドウシステム（アプリの開閉、最小化）
+- **リッチなインタラクション**:
+  - ドラッグ＆ドロップによるアプリアイコンの並び替え
+  - ページネーション（スマホ表示時のスワイプ移動）
+  - アニメーション（アプリ起動、ロック解除、揺れ効果など）
+- **レスポンシブ対応**:
+  - PC: デスクトップライクなウィンドウ操作
+  - Mobile: スマホライクな全画面表示とページ切り替え
+
+## 🛠️ 技術スタック
+
+- **Framework**: [Astro](https://astro.build/)
+- **UI Library**: [Vue 3](https://vuejs.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **State Management**: [Pinia](https://pinia.vuejs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Icons**: [Phosphor Icons](https://phosphoricons.com/)
+
+## 🚀 開発環境のセットアップ
+
+```bash
+# 依存関係のインストール
+npm install
+
+# 開発サーバーの起動
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 🏗️ ビルド
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+# プロダクションビルドの作成
+npm run build
 ```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
