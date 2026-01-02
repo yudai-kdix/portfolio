@@ -116,6 +116,7 @@ const unlock = () => {
 
     <!-- Passcode View -->
     <div v-else class="flex flex-col items-center animate-fade-in w-full max-w-sm">
+        <div class="mb-4 text-sm font-light tracking-widest opacity-70">Any Passcode OK</div>
         <div class="mb-12 flex gap-4">
             <div 
                 v-for="i in 4" 
