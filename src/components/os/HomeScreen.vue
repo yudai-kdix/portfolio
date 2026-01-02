@@ -94,7 +94,7 @@ const createPageComputed = (pageIndex: number) => {
     });
 };
 
-const mobilePages = [
+const pages = [
     createPageComputed(0),
     createPageComputed(1)
 ];
@@ -169,97 +169,25 @@ const onDragEnd = () => {
     @touchstart="handleBackgroundClick"
   >
     <!-- Grid -->
-    <!-- Grid (Desktop) -->
-    <draggable
-      v-if="isDesktop"
-      v-model="store.gridItems"
-      class="grid grid-cols-6"
-      :style="{ 
-          columnGap: gap + 'px', 
-          rowGap: gap + 'px',
-          paddingLeft: gap + 'px', 
-          paddingRight: gap + 'px', 
-          paddingBottom: '140px' 
-      }"
-      item-key="id"
-      :animation="250"
-      :group="{ name: 'apps', put: true }"
-      :disabled="!store.isEditMode"
-      :force-fallback="true"
-      :fallback-tolerance="3"
-      :delay="0"
-      :touch-start-threshold="5"
-      :fallback-on-body="true"
-      fallback-class="sortable-fallback"
-    >
-      <template #item="{ element }">
-        <div
-            :data-type="element.type"
-            @mousedown="startLongPress" 
-            @touchstart="startLongPress" 
-            @mouseup="cancelLongPress" 
-            @mouseleave="cancelLongPress"
-            @touchend="cancelLongPress"
-            class="relative flex items-center justify-center transition-all duration-300"
-            :class="[
-              { 'animate-jiggle': store.isEditMode && element.type !== 'empty' },
-              element.type === 'widget' ? 'col-span-2 row-span-2 aspect-auto' : 'aspect-square',
-              element.type === 'empty' ? 'empty-slot' : ''
-            ]"
-        >
-            <PhotoWidget 
-                v-if="element.type === 'widget'" 
-                :class="{ 'pointer-events-none': store.isEditMode }" 
-            />
-            
-            <AppWidget
-                v-else-if="element.type === 'app' && isDesktop"
-                :app="element"
-                :is-edit-mode="store.isEditMode"
-                :class="{ 'pointer-events-none': store.isEditMode }"
-            />
-
-            <Icon
-                v-else-if="element.type === 'app'"
-                :icon="element.icon"
-                :label="element.label"
-                @click="!store.isEditMode && store.openApp(element.id)"
-                :class="{ 'pointer-events-none': store.isEditMode }"
-            />
-            
-            <!-- Empty Slot -->
-            <div v-else class="w-full h-full"></div>
-
-            <!-- Remove Button -->
-            <div 
-                v-if="store.isEditMode && element.type !== 'empty'" 
-                @click.stop="promptRemove(element)"
-                @mousedown.stop
-                @touchstart.stop
-                class="absolute -top-2 -left-2 z-20 bg-gray-400 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg opacity-90 animate-none cursor-pointer hover:bg-gray-500 active:scale-95 transition-colors"
-             >
-                 <span class="text-xs font-bold leading-none">-</span>
-             </div>
-        </div>
-      </template>
-    </draggable>
-
-    <!-- Mobile Paged Layout -->
+    <!-- Unified Paged Grid -->
     <div 
-        v-else 
-        class="w-full h-full flex overflow-x-auto scrollbar-hide pb-[140px] pt-3"
-        :class="{ 'snap-x snap-mandatory': !isDragging }"
+        class="w-full h-full flex overflow-x-auto scrollbar-hide pb-[140px]"
+        :class="[
+            { 'snap-x snap-mandatory': !isDragging },
+            isDesktop ? 'pt-0' : 'pt-3'
+        ]"
         ref="scrollContainer"
         @scroll="onScroll"
     >
         <div 
-            v-for="(page, i) in mobilePages" 
+            v-for="(page, i) in pages" 
             :key="i"
             class="w-full h-full shrink-0 snap-center px-4"
         >
              <draggable
                 v-model="page.value"
-                class="grid grid-cols-4"
+                class="grid"
+                :class="isDesktop ? 'grid-cols-6' : 'grid-cols-4'"
                 :style="{ columnGap: gap + 'px', rowGap: gap + 'px' }"
                 item-key="id"
                 :animation="250"
@@ -267,7 +195,7 @@ const onDragEnd = () => {
                 :disabled="!store.isEditMode"
                 :force-fallback="true"
                 fallback-class="sortable-fallback"
-                :delay="200"
+                :delay="isDesktop ? 0 : 200"
                 :delay-on-touch-only="true"
                 @start="onDragStart"
                 @end="onDragEnd"
@@ -275,6 +203,7 @@ const onDragEnd = () => {
                  <template #item="{ element }">
                     <div
                         :data-type="element.type"
+                        @mousedown="startLongPress"
                         @touchstart="startLongPress" 
                         @touchend="cancelLongPress"
                         @contextmenu.prevent="startLongPress"
@@ -285,11 +214,21 @@ const onDragEnd = () => {
                             element.type === 'empty' ? 'empty-slot' : ''
                         ]"
                     >
+                        <!-- Widget (Profile) -->
                         <PhotoWidget 
                             v-if="element.type === 'widget'" 
                             :class="{ 'pointer-events-none': store.isEditMode }" 
                         />
+                        
+                        <!-- Desktop Card App -->
+                        <AppWidget
+                            v-else-if="element.type === 'app' && isDesktop"
+                            :app="element"
+                            :is-edit-mode="store.isEditMode"
+                            :class="{ 'pointer-events-none': store.isEditMode }"
+                        />
 
+                        <!-- Mobile Icon App -->
                          <Icon
                             v-else-if="element.type === 'app'"
                             :icon="element.icon"
@@ -297,13 +236,16 @@ const onDragEnd = () => {
                             @click="!store.isEditMode && store.openApp(element.id)"
                             :class="{ 'pointer-events-none': store.isEditMode }"
                         />
+                        
+                        <!-- Empty Slot -->
                         <div v-else class="w-full h-full pointer-events-none"></div>
 
+                         <!-- Remove Button -->
                          <div 
                             v-if="store.isEditMode && element.type !== 'empty'" 
                             @click.stop="promptRemove(element)"
                             @touchstart.stop
-                            class="absolute -top-2 -left-2 z-20 bg-gray-400 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg opacity-90 animate-none"
+                            class="absolute -top-2 -left-2 z-20 bg-gray-400 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg opacity-90 animate-none cursor-pointer hover:bg-gray-500 active:scale-95 transition-colors"
                          >
                              <span class="text-xs font-bold leading-none">-</span>
                          </div>
