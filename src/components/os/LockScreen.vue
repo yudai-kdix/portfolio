@@ -107,9 +107,13 @@ const unlock = () => {
             <p class="text-lg font-normal tracking-wide opacity-80">{{ date }}</p>
         </div>
         
+        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <h2 class="text-3xl font-bold tracking-widest drop-shadow-lg opacity-90 animate-fade-in-up" style="animation-delay: 0.1s;">Yudai's Portfolio</h2>
+        </div>
+        
         <div class="absolute bottom-24 left-0 right-0 flex justify-center">
             <div class="animate-bounce text-base font-bold tracking-widest drop-shadow-md">
-                TAP TO UNLOCK
+                TAP TO START
             </div>
         </div>
     </div>
